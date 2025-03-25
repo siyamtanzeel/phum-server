@@ -1,9 +1,11 @@
-import { Schema, model } from 'mongoose';
+import { Schema, Types, model } from 'mongoose';
 import {
   TName,
   TGuardian,
   TLocalGuardian,
   TStudent,
+  studentModel,
+  TStudentMethods,
 } from './student.interface';
 
 // Schema for TName
@@ -71,16 +73,18 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
 });
 
 // Schema for TStudent
-const studentSchema = new Schema<TStudent>(
+const studentSchema = new Schema<TStudent, studentModel, TStudentMethods>(
   {
     id: {
       type: String,
       required: [true, 'Student ID is required'],
       unique: true, // Assuming ID should be unique
     },
-    password: {
-      type: String,
-      required: [true, 'Password is required'],
+    user: {
+      type: Schema.Types.ObjectId,
+      required: [true, 'User ID is required'],
+      unique: true,
+      ref: 'User',
     },
     name: {
       type: nameSchema,
@@ -93,7 +97,7 @@ const studentSchema = new Schema<TStudent>(
     },
     dateOfBirth: {
       type: String, // Kept as string per your interface; could be Date if preferred
-      required: false,
+      required: [true, 'Date of birth is required'],
     },
     email: {
       type: String,
@@ -138,15 +142,17 @@ const studentSchema = new Schema<TStudent>(
       enum: ['active', 'blocked'],
       default: 'active', // Default value added for practicality
     },
-    isDeleted: {
-      type: Boolean,
-      default: false, // Default value for soft delete functionality
-    },
   },
   {
     timestamps: true, // Adds createdAt and updatedAt fields
   },
 );
 
+//creating static method for checking if student exists
+studentSchema.method('studentExists', async function (id: string) {
+  const existingUser = await this.model('Student').findOne({ id });
+  return !!existingUser; // Return a boolean
+});
+
 // Create and export the Mongoose model
-export const Student = model<TStudent>('Student', studentSchema);
+export const Student = model<TStudent, studentModel>('Student', studentSchema);

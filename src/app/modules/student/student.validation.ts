@@ -2,21 +2,35 @@ import { z } from 'zod';
 
 // Zod schema for TName
 const nameValidationSchema = z.object({
-  firstName: z.string({ required_error: 'First name is required' }).trim(),
+  firstName: z
+    .string()
+    .min(1)
+    .max(20)
+    .refine((value) => /^[A-Z]/.test(value), {
+      message: 'First Name must start with a capital letter',
+    }),
   middleName: z.string().trim().optional(), // Optional field
   lastName: z.string({ required_error: 'Last name is required' }).trim(),
 });
 
 // Zod schema for TGuardian
 const guardianValidationSchema = z.object({
-  fatherName: z.string({ required_error: 'Father name is required' }).trim(),
+  fatherName: z
+    .string({ required_error: 'Father name is required' })
+    .min(1)
+    .max(30)
+    .trim(),
   fatherOccupation: z
     .string({ required_error: 'Father occupation is required' })
     .trim(),
   fatherContactNo: z
     .string({ required_error: 'Father contact number is required' })
     .trim(),
-  motherName: z.string({ required_error: 'Mother name is required' }).trim(),
+  motherName: z
+    .string({ required_error: 'Mother name is required' })
+    .min(1)
+    .max(30)
+    .trim(),
   motherOccupation: z
     .string({ required_error: 'Mother occupation is required' })
     .trim(),
@@ -41,11 +55,9 @@ const localGuardianValidationSchema = z.object({
 
 // Zod schema for TStudent
 const studentValidationSchema = z.object({
-  id: z.string({ required_error: 'Student ID is required' }).trim(),
-  password: z.string({ required_error: 'Password is required' }).trim(),
   name: nameValidationSchema,
   gender: z.enum(['male', 'female'], { required_error: 'Gender is required' }),
-  dateOfBirth: z.string().optional(), // Optional field
+  dateOfBirth: z.string({ required_error: 'Date of birth is required' }), // Optional field
   email: z
     .string({ required_error: 'Email is required' })
     .email('Invalid email format'),
@@ -66,7 +78,6 @@ const studentValidationSchema = z.object({
   localGuardian: localGuardianValidationSchema,
   profileImage: z.string({ required_error: 'Profile image is required' }), // Could be optional if needed
   isActive: z.enum(['active', 'blocked']).default('active'),
-  isDeleted: z.boolean().default(false),
 });
 
 // Export the Zod schema for validation

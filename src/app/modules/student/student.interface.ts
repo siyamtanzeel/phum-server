@@ -1,3 +1,5 @@
+import { Model, Types } from 'mongoose';
+
 export type TName = {
   firstName: string;
   middleName?: string;
@@ -22,10 +24,10 @@ type TBloodGroup = 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
 
 export type TStudent = {
   id: string;
-  password: string;
+  user: Types.ObjectId;
   name: TName;
   gender: 'male' | 'female';
-  dateOfBirth?: 'string';
+  dateOfBirth?: string;
   email: string;
   contactNo: string;
   emergencyContactNo: string;
@@ -36,5 +38,14 @@ export type TStudent = {
   localGuardian: TLocalGuardian;
   profileImage: string;
   isActive: 'active' | 'blocked';
-  isDeleted: boolean;
 };
+
+export type TStudentMethods = {
+  studentExists(id: string): Promise<boolean>;
+};
+
+export type studentModel = Model<
+  TStudent,
+  Record<string, never>,
+  TStudentMethods
+>;

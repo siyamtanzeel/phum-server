@@ -1,26 +1,7 @@
 import { Request, RequestHandler, Response } from 'express';
 import { studentService } from './student.service';
 import status from 'http-status';
-import studentValidationSchema from './student.validation';
 
-const createStudent = async (req: Request, res: Response) => {
-  try {
-    const studentData = req.body.student;
-    const zodParsedData = studentValidationSchema.parse(studentData);
-    const result = await studentService.createStudentIntoDB(studentData);
-    res.status(status.OK).send({
-      success: true,
-      message: 'Student created successfully',
-      data: result,
-    });
-  } catch (error) {
-    res.status(status.INTERNAL_SERVER_ERROR).send({
-      success: false,
-      message: 'Failed to create student',
-      error: error,
-    });
-  }
-};
 const deleteStudent = async (req: Request, res: Response) => {
   try {
     const result = await studentService.deleteStudentFromDB(req.body);
@@ -71,7 +52,6 @@ const getSingleStudent: RequestHandler = async (req, res) => {
   }
 };
 export const studentController = {
-  createStudent,
   deleteStudent,
   getAllStudents,
   getSingleStudent,
