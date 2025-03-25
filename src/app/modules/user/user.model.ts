@@ -1,4 +1,4 @@
-import { string } from 'zod';
+import bcrypt from 'bcrypt';
 import { TUser } from './user.interface';
 import { model, Schema, Types } from 'mongoose';
 
@@ -25,4 +25,13 @@ const userSchema = new Schema<TUser>(
   },
 );
 
+userSchema.pre('save', async function (next) {
+  const user = this;
+  user.password = await bcrypt.hash(user.password, 12);
+  next();
+});
+userSchema.post('save', async function (doc, next) {
+  doc.password = '';
+  next();
+});
 export const User = model<TUser>('User', userSchema);

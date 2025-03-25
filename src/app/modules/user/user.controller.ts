@@ -5,7 +5,7 @@ import { userService } from './user.service';
 import sendResponse from '../../utils/sendResponse';
 import catchAsync from '../../utils/catchAsync';
 
-const createStudent: RequestHandler = catchAsync(async (req, res, next) => {
+const createStudent: RequestHandler = catchAsync(async (req, res) => {
   const { student: studentData, password } = req.body;
   const zodParsedStudentData = studentValidationSchema.parse(studentData);
   const result = await userService.createStudentIntoDB(
@@ -19,7 +19,7 @@ const createStudent: RequestHandler = catchAsync(async (req, res, next) => {
     data: result,
   });
 });
-const getAllUsers: RequestHandler = catchAsync(async (req, res, next) => {
+const getAllUsers: RequestHandler = catchAsync(async (req, res) => {
   const result = await userService.getAllUsersFromDB();
   sendResponse(res, {
     statusCode: status.OK,
