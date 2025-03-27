@@ -57,7 +57,9 @@ const localGuardianValidationSchema = z.object({
 const studentValidationSchema = z.object({
   name: nameValidationSchema,
   gender: z.enum(['male', 'female'], { required_error: 'Gender is required' }),
-  dateOfBirth: z.string({ required_error: 'Date of birth is required' }), // Optional field
+  dateOfBirth: z
+    .date({ required_error: 'Date of birth is required' })
+    .optional(), // Optional field
   email: z
     .string({ required_error: 'Email is required' })
     .email('Invalid email format'),
@@ -76,6 +78,9 @@ const studentValidationSchema = z.object({
     .trim(),
   guardian: guardianValidationSchema,
   localGuardian: localGuardianValidationSchema,
+  academicSemester: z.string({
+    required_error: 'Academic Semester is required',
+  }),
   profileImage: z.string({ required_error: 'Profile image is required' }), // Could be optional if needed
   isActive: z.enum(['active', 'blocked']).default('active'),
 });
