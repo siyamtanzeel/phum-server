@@ -133,7 +133,7 @@ const studentSchema = new Schema<TStudent, studentModel, TStudentMethods>(
       type: localGuardianSchema,
       required: [true, 'Local guardian details are required'],
     },
-    academicSemester: {
+    admissionSemester: {
       type: Schema.Types.ObjectId,
       required: [true, 'Academic Semester is required'],
       ref: 'AcademicSemester',

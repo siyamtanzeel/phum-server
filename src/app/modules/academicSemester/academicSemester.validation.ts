@@ -3,17 +3,15 @@ import {
   academicSemesterCodes,
   academicSemesterMonths,
   academicSemesterNames,
-} from './academicSemester.model';
+} from './academicSemester.constants';
 
 const createAcademicSemesterValidationSchema = z.object({
   name: z.enum([...academicSemesterNames] as [string, ...string[]], {
     required_error: 'Name is required',
   }),
-  year: z
-    .string({
-      required_error: 'Year is required',
-    })
-    .transform((year: string) => new Date(year)),
+  year: z.string({
+    required_error: 'Year is required',
+  }),
   code: z.enum([...academicSemesterCodes] as [string, ...string[]], {
     required_error: 'Code is required',
   }),

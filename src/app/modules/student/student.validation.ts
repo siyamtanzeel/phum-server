@@ -78,8 +78,8 @@ const studentValidationSchema = z.object({
     .trim(),
   guardian: guardianValidationSchema,
   localGuardian: localGuardianValidationSchema,
-  academicSemester: z.string({
-    required_error: 'Academic Semester is required',
+  admissionSemester: z.string({
+    required_error: 'Admission Semester is required',
   }),
   profileImage: z.string({ required_error: 'Profile image is required' }), // Could be optional if needed
   isActive: z.enum(['active', 'blocked']).default('active'),
