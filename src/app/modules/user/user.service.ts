@@ -3,7 +3,6 @@ import { TStudent } from '../student/student.interface';
 import { Student } from '../student/student.model';
 import { TUser } from './user.interface';
 import { User } from './user.model';
-import userValidationSchema from './user.validation';
 
 const createStudentIntoDB = async (
   studentData: Partial<TStudent>,
@@ -11,10 +10,10 @@ const createStudentIntoDB = async (
 ) => {
   const session = await startSession();
   try {
-    await session.startTransaction();
+    session.startTransaction();
     const userData: Partial<TUser> = {};
     userData.id = 'B220302022';
-    userData.password = userValidationSchema.parse({ password }).password;
+    userData.password = password;
     userData.role = 'student';
     const newUser = await User.create([userData], { session });
     if (!newUser.length) {
