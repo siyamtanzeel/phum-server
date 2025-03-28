@@ -1,8 +1,9 @@
-import { startSession } from 'mongoose';
+import { startSession, Types } from 'mongoose';
 import { TStudent } from '../student/student.interface';
 import { Student } from '../student/student.model';
 import { TUser } from './user.interface';
 import { User } from './user.model';
+import generateStudentId from './user.utils';
 
 const createStudentIntoDB = async (
   studentData: Partial<TStudent>,
@@ -12,7 +13,9 @@ const createStudentIntoDB = async (
   try {
     session.startTransaction();
     const userData: Partial<TUser> = {};
-    userData.id = 'B220302022';
+    userData.id = await generateStudentId(
+      studentData.admissionSemester as Types.ObjectId,
+    );
     userData.password = password;
     userData.role = 'student';
     const newUser = await User.create([userData], { session });
@@ -34,8 +37,8 @@ const createStudentIntoDB = async (
       }
       await session.commitTransaction();
       return {
-        user: newUser,
-        student: newStudent,
+        user: newUser[0],
+        student: newStudent[0],
       };
     }
     throw new Error('Failed to create Student');
