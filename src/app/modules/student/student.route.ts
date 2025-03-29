@@ -6,7 +6,7 @@ import { studentValidation } from './student.validation';
 const router = Router();
 
 router.get('/all-students', studentController.getAllStudents);
-router.get('/:id', studentController.getSingleStudent);
+router.get('/find/:id', studentController.getSingleStudent);
 router.patch(
   '/:id',
   validateRequest(studentValidation.updateStudentValidationSchema),
