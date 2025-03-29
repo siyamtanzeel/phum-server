@@ -14,6 +14,15 @@ const createStudent: RequestHandler = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const deleteStudent: RequestHandler = catchAsync(async (req, res) => {
+  const result = await userService.deleteStudentFromDB(req.params.id);
+  sendResponse(res, {
+    statusCode: status.OK,
+    success: true,
+    message: 'Student deleted successfully',
+    data: result,
+  });
+});
 const getAllUsers: RequestHandler = catchAsync(async (req, res) => {
   const result = await userService.getAllUsersFromDB();
   sendResponse(res, {
@@ -27,4 +36,5 @@ const getAllUsers: RequestHandler = catchAsync(async (req, res) => {
 export const userController = {
   createStudent,
   getAllUsers,
+  deleteStudent,
 };

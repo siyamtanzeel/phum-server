@@ -3,8 +3,8 @@ import TAcademicSemester from '../academicSemester/academicSemester.interface';
 import { Student } from '../student/student.model';
 import AcademicSemester from '../academicSemester/academicSemester.model';
 
-const generateStudentId = async (payload: Types.ObjectId) => {
-  const admissionSemester = await AcademicSemester.findById(payload);
+const generateStudentId = async (payload: Partial<TAcademicSemester>) => {
+  const admissionSemester = await AcademicSemester.findOne(payload);
   const { year, code } = admissionSemester as TAcademicSemester;
   let currentId = year + code + (1).toString().padStart(4, '0');
   const studentExists = await Student.findOne({

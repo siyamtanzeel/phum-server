@@ -10,6 +10,7 @@ router.post(
   validateRequest(userValidation.createStudentValidationSchema),
   userController.createStudent,
 );
-router.get('/users', userController.getAllUsers);
+router.delete('/delete-student/:id', userController.deleteStudent);
+router.get('/all-users', userController.getAllUsers);
 
 export const userRoutes = router;

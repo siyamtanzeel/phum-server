@@ -4,6 +4,8 @@ import { Student } from '../student/student.model';
 import { TUser } from './user.interface';
 import { User } from './user.model';
 import generateStudentId from './user.utils';
+import TAcademicSemester from '../academicSemester/academicSemester.interface';
+import AcademicSemester from '../academicSemester/academicSemester.model';
 
 const createStudentIntoDB = async (
   studentData: Partial<TStudent>,
@@ -14,7 +16,7 @@ const createStudentIntoDB = async (
     session.startTransaction();
     const userData: Partial<TUser> = {};
     userData.id = await generateStudentId(
-      studentData.admissionSemester as Types.ObjectId,
+      studentData.admissionSemester as Partial<TAcademicSemester>,
     );
     userData.password = password;
     userData.role = 'student';
@@ -25,6 +27,10 @@ const createStudentIntoDB = async (
     if (Object.keys(newUser).length) {
       studentData.id = newUser[0].id;
       studentData.user = newUser[0]._id;
+      const admissionSemester = await AcademicSemester.findOne(
+        studentData.admissionSemester,
+      );
+      studentData.admissionSemester = admissionSemester!._id;
       const studentExists = await new Student().studentExists(
         studentData.id as string,
       );
@@ -49,6 +55,15 @@ const createStudentIntoDB = async (
     session.endSession();
   }
 };
+const deleteStudentFromDB = async (payload: string) => {
+  const targetUser = await User.findOne({ id: payload });
+  if (!targetUser) {
+    throw new Error('Invalid student ID!');
+  }
+  const result = await targetUser.updateOne({ isDeleted: true });
+  result.password = '';
+  return result;
+};
 const getAllUsersFromDB = async () => {
   const result = await User.find();
   return result;
@@ -57,4 +72,5 @@ const getAllUsersFromDB = async () => {
 export const userService = {
   createStudentIntoDB,
   getAllUsersFromDB,
+  deleteStudentFromDB,
 };

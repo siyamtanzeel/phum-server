@@ -12,7 +12,7 @@ import {
 const nameSchema = new Schema<TName>({
   firstName: {
     type: String,
-    required: [true, 'First name is required'],
+    required: true,
   },
   middleName: {
     type: String,
@@ -20,7 +20,7 @@ const nameSchema = new Schema<TName>({
   },
   lastName: {
     type: String,
-    required: [true, 'Last name is required'],
+    required: true,
   },
 });
 
@@ -77,13 +77,13 @@ const studentSchema = new Schema<TStudent, studentModel, TStudentMethods>(
   {
     id: {
       type: String,
-      required: [true, 'Student ID is required'],
-      unique: true, // Assuming ID should be unique
+      required: true,
+      unique: [true, 'Student ID already exists!'],
     },
     user: {
       type: Schema.Types.ObjectId,
       required: [true, 'User ID is required'],
-      unique: true,
+      unique: [true, 'User ID already exists!'],
       ref: 'User',
     },
     name: {
@@ -92,17 +92,17 @@ const studentSchema = new Schema<TStudent, studentModel, TStudentMethods>(
     },
     gender: {
       type: String,
-      enum: ['male', 'female'],
-      required: [true, 'Gender is required'],
+      enum: ['Male', 'Female'],
+      required: true,
     },
     dateOfBirth: {
-      type: String, // Kept as string per your interface; could be Date if preferred
+      type: String,
       required: [true, 'Date of birth is required'],
     },
     email: {
       type: String,
       required: [true, 'Email is required'],
-      unique: true, // Assuming email should be unique
+      unique: true,
     },
     contactNo: {
       type: String,
@@ -115,7 +115,7 @@ const studentSchema = new Schema<TStudent, studentModel, TStudentMethods>(
     bloodGroup: {
       type: String,
       enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
-      required: false, // Optional as per ? in the interface
+      required: [true, 'Blood Group is required'],
     },
     presentAddress: {
       type: String,

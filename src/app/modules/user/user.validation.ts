@@ -1,8 +1,8 @@
 import { z } from 'zod';
-import studentValidationSchema from '../student/student.validation';
+import { studentNameValidationSchema } from '../../validations/studentValidations/studentNameValidationSchema';
 
 const createStudentValidationSchema = z.object({
-  student: studentValidationSchema,
+  student: studentNameValidationSchema,
   password: z.string().min(1).max(20),
 });
 
