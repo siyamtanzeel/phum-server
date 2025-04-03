@@ -22,7 +22,9 @@ const createAcademicSemesterValidationSchema = z.object({
     required_error: 'End month is required',
   }),
 });
-
+const updateAcademicSemesterValidationSchema =
+  createAcademicSemesterValidationSchema.partial().strict();
 export const academicSemesterValidation = {
   createAcademicSemesterValidationSchema,
+  updateAcademicSemesterValidationSchema,
 };

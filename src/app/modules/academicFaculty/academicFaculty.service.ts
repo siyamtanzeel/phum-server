@@ -1,7 +1,14 @@
 import TAcademicFaculty from './academicFaculty.interface';
 import AcademicFaculty from './academicFaculty.model';
 
-const createAcademicFacultyIntoDB = async (payload: TAcademicFaculty) => {
+const createAcademicFacultyIntoDB = async (
+  payload: Partial<TAcademicFaculty>,
+) => {
+  const facultyCount = await AcademicFaculty.countDocuments();
+  payload.code =
+    facultyCount < 9
+      ? '0' + (facultyCount + 1).toString()
+      : (facultyCount + 1).toString();
   const result = await AcademicFaculty.create(payload);
   return result;
 };

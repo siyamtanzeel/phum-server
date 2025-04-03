@@ -138,6 +138,11 @@ const studentSchema = new Schema<TStudent, studentModel, TStudentMethods>(
       required: [true, 'Academic Semester is required'],
       ref: 'AcademicSemester',
     },
+    academicDepartment: {
+      type: Schema.Types.ObjectId,
+      required: [true, 'Academic Department is required'],
+      ref: 'AcademicDepartment',
+    },
     profileImage: {
       type: String,
       required: [true, 'Profile image is required'], // Could be optional if preferred

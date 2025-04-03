@@ -12,9 +12,9 @@ export const yearValidationSchema = z
     (value) => {
       const year = parseInt(value, 10);
       const currentYear = new Date().getFullYear();
-      return year >= 2000 && year <= currentYear + 1; // Allowing next year
+      return year >= 2025 && year <= currentYear + 1; // Allowing next year
     },
     {
-      message: 'Year must be between 2000 and next year',
+      message: 'Year must be between 2025 and next year',
     },
   );

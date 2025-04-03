@@ -8,6 +8,10 @@ const academicDepartmentSchema = new Schema<TAcademicDepartment>(
       required: true,
       unique: [true, 'Department already exists'],
     },
+    code: {
+      type: String,
+      required: true,
+    },
     academicFaculty: {
       type: Schema.Types.ObjectId,
       required: true,

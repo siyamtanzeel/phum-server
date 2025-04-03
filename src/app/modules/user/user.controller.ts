@@ -32,9 +32,19 @@ const getAllUsers: RequestHandler = catchAsync(async (req, res) => {
     data: result,
   });
 });
-
+const getSingleUser: RequestHandler = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await userService.getSingleUserFromDB(id);
+  sendResponse(res, {
+    statusCode: status.OK,
+    success: true,
+    message: `User with the ID of ${id} retrieved successfully`,
+    data: result,
+  });
+});
 export const userController = {
   createStudent,
   getAllUsers,
+  getSingleUser,
   deleteStudent,
 };

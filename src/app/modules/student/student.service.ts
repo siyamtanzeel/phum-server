@@ -4,12 +4,15 @@ import { Student } from './student.model';
 const getAllStudentsFromDB = async () => {
   const result = {
     count: await Student.countDocuments(),
-    students: await Student.find(),
+    students: await Student.find().populate(['admissionSemester', 'user']),
   };
   return result;
 };
 const getSingleStudentFromDB = async (id: string) => {
-  const result = await Student.findOne({ id });
+  const result = await Student.findOne({ id }).populate([
+    'admissionSemester',
+    'user',
+  ]);
   if (!result) {
     throw new Error(`No student found!`);
   }
@@ -23,7 +26,9 @@ const updateStudentInDB = async (id: string, payload: Partial<TStudent>) => {
   if (!targetStudent) {
     throw new Error('Invalid Student ID!');
   }
-  const result = await targetStudent.updateOne({ payload });
+  const result = await targetStudent
+    .updateOne({ payload })
+    .populate(['admissionSemester', 'user']);
   return result;
 };
 export const studentService = {

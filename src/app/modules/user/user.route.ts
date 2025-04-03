@@ -12,5 +12,6 @@ router.post(
 );
 router.delete('/delete-student/:id', userController.deleteStudent);
 router.get('/all-users', userController.getAllUsers);
+router.get('/find/:id', userController.getSingleUser);
 
 export const userRoutes = router;
