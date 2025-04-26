@@ -25,7 +25,7 @@ type TBloodGroup = 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
 export type TStudent = {
   id: string;
   user: Types.ObjectId;
-  name: TName;
+  name: TName; //non primitive
   gender: 'Male' | 'Female';
   dateOfBirth?: string;
   email: string;
@@ -34,8 +34,8 @@ export type TStudent = {
   bloodGroup: TBloodGroup;
   presentAddress: string;
   permanentAddress: string;
-  guardian: TGuardian;
-  localGuardian: TLocalGuardian;
+  guardian: TGuardian; // non primitive
+  localGuardian: TLocalGuardian; // non primitive
   admissionSemester: Types.ObjectId;
   academicDepartment: Types.ObjectId;
   profileImage: string;

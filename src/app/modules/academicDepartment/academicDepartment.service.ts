@@ -1,3 +1,5 @@
+import status from 'http-status';
+import AppError from '../../errors/AppError';
 import AcademicFaculty from '../academicFaculty/academicFaculty.model';
 import TAcademicDepartment from './academicDepartment.interface';
 import AcademicDepartment from './academicDepartment.model';
@@ -7,7 +9,7 @@ const createAcademicDepartmentIntoDB = async (payload: any) => {
     name: payload.academicFaculty,
   });
   if (!academicFaculty) {
-    throw new Error('Invalid Academic Faculty');
+    throw new AppError(status.NOT_FOUND,'Invalid Academic Faculty');
   }
   const departmentCount = await AcademicDepartment.countDocuments({
     academicFaculty: academicFaculty._id,

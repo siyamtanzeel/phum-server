@@ -17,20 +17,24 @@ const createStudentIntoDB = async (
   const session = await startSession();
   try {
     session.startTransaction();
-    const userData: Partial<TUser> = {};
+    const userData: Partial<TUser> = {
+      password,
+      role: 'student',
+    };
     const admissionSemester = await AcademicSemester.findOne(
       studentData.admissionSemester,
-    );
+    ).session(session);
     if (!admissionSemester) {
       throw new AppError(
         status.NOT_FOUND,
         'Admission in this semester is not available!',
       );
     }
-    const academicDepartmentName = studentData.academicDepartment;
     const academicDepartment = await AcademicDepartment.findOne({
-      name: academicDepartmentName,
-    }).populate('academicFaculty');
+      name: studentData.academicDepartment,
+    })
+      .populate('academicFaculty')
+      .session(session);
     if (!academicDepartment) {
       throw new AppError(
         status.NOT_FOUND,
@@ -41,11 +45,13 @@ const createStudentIntoDB = async (
       admissionSemester,
       academicDepartment,
     );
-    userData.password = password;
-    userData.role = 'student';
+    
     const newUser = await User.create([userData], { session });
     if (!newUser.length) {
-      throw new Error('failed to create user!');
+      throw new AppError(
+        status.INTERNAL_SERVER_ERROR,
+        'failed to create user!',
+      );
     }
     if (Object.keys(newUser).length) {
       studentData.id = newUser[0].id;
@@ -56,11 +62,14 @@ const createStudentIntoDB = async (
         studentData.id as string,
       );
       if (studentExists) {
-        throw new Error('Student already exists!');
+        throw new AppError(status.NOT_ACCEPTABLE, 'Student already exists!');
       }
       const newStudent = await Student.create([studentData], { session });
       if (!newStudent.length) {
-        throw new Error('failed to create student!');
+        throw new AppError(
+          status.INTERNAL_SERVER_ERROR,
+          'failed to create student!',
+        );
       }
       await session.commitTransaction();
       return {
@@ -76,7 +85,10 @@ const createStudentIntoDB = async (
         ]),
       };
     }
-    throw new Error('Failed to create Student');
+    throw new AppError(
+      status.INTERNAL_SERVER_ERROR,
+      'Failed to create Student',
+    );
   } catch (error) {
     await session.abortTransaction();
     throw error;
@@ -87,7 +99,7 @@ const createStudentIntoDB = async (
 const deleteStudentFromDB = async (payload: string) => {
   const targetUser = await User.findOne({ id: payload });
   if (!targetUser) {
-    throw new Error('Invalid student ID!');
+    throw new AppError(status.BAD_REQUEST, 'Invalid student ID!');
   }
   const result = await targetUser.updateOne({ isDeleted: true });
   result.password = '';
@@ -100,10 +112,10 @@ const getAllUsersFromDB = async () => {
 const getSingleUserFromDB = async (id: string) => {
   const result = await User.findOne({ id });
   if (!result) {
-    throw new Error(`No User found!`);
+    throw new AppError(status.NOT_FOUND, `No User found!`);
   }
   if (result.isDeleted) {
-    throw new Error('User is deleted!');
+    throw new AppError(status.NOT_FOUND, 'User is deleted!');
   }
   result.password = null!;
   return result;

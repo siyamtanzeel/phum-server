@@ -6,6 +6,8 @@ import {
   academicSemesterMonths,
   academicSemesterNames,
 } from './academicSemester.constants';
+import AppError from '../../errors/AppError';
+import status from 'http-status';
 
 const academicSemesterSchema = new Schema<TAcademicSemester>(
   {
@@ -46,12 +48,13 @@ academicSemesterSchema.pre('save', async function (next) {
     year: this.year,
   });
   if (similarSemesterExists) {
-    throw new Error(
+    throw new AppError(
+      status.NOT_ACCEPTABLE,
       `${similarSemesterExists.name} semester in the year ${similarSemesterExists.year} already exists!`,
     );
   }
   if (academicSemesterCodesMapper[this.name] !== this.code) {
-    throw new Error('Invalid Semester code!');
+    throw new AppError(status.NOT_ACCEPTABLE, 'Invalid Semester code!');
   }
   next();
 });

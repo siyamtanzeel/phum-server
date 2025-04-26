@@ -14,3 +14,16 @@ export const isActiveValidationSchema = z
   })
   .default('active') // Default to 'active' if undefined
   .optional(); // Make it optional to align with default behavior
+
+export const updateIsActiveValidationSchema = z
+  .enum(['active', 'blocked'], {
+    errorMap: (issue, ctx) => {
+      if (issue.code === 'invalid_enum_value') {
+        return {
+          message: `Status must be either 'active' or 'blocked'. ${ctx.data ? `'${ctx.data}' is invalid.` : ''}`,
+        };
+      }
+      return { message: 'Invalid status' };
+    },
+  })
+  .optional(); // Make it optional to align with default behavior

@@ -2,15 +2,31 @@ import { string, z } from 'zod';
 import { academicSemesterNames } from '../academicSemester/academicSemester.constants';
 import { guardianValidationSchema } from '../../validations/studentValidations/guardianValidationSchema';
 import { localGuardianValidationSchema } from '../../validations/studentValidations/localGuardianValidationSchema';
-import { dateOfBirthValidationSchema } from '../../validations/studentValidations/dateOfBirthValidationSchema';
-import { contactNoValidationSchema } from '../../validations/studentValidations/contactNoValidationSchema';
-import { emergencyContactValidationSchema } from '../../validations/studentValidations/emergencyContactValidationSchema';
-import bloodGroupValidationSchema from '../../validations/studentValidations/bloodGroupValidationSchema';
-import addressValidationSchema from '../../validations/studentValidations/addressValidationSchema';
+import {
+  dateOfBirthValidationSchema,
+  updateDateOfBirthValidationSchema,
+} from '../../validations/studentValidations/dateOfBirthValidationSchema';
+import {
+  contactNoValidationSchema,
+  updateContactNoValidationSchema,
+} from '../../validations/studentValidations/contactNoValidationSchema';
+import {
+  emergencyContactValidationSchema,
+  updateEmergencyContactValidationSchema,
+} from '../../validations/studentValidations/emergencyContactValidationSchema';
+
 import { yearValidationSchema } from '../../validations/admissionSemester/yearValidationSchema';
-import { studentNameValidationSchema } from '../../validations/studentValidations/studentNameValidationSchema';
+import {
+  studentNameValidationSchema,
+  updateStudentNameValidationSchema,
+} from '../../validations/studentValidations/studentNameValidationSchema';
 import { profileImageValidationSchema } from '../../validations/studentValidations/profileImageValidationSchema';
 import { isActiveValidationSchema } from '../../validations/studentValidations/isActiveValidationSchema';
+import {
+  bloodGroupValidationSchema,
+  updateBloodGroupValidationSchema,
+} from '../../validations/studentValidations/bloodGroupValidationSchema';
+import { addressValidationSchema } from '../../validations/studentValidations/addressValidationSchema';
 
 // Zod schema for TStudent
 const studentValidationSchema = z
@@ -44,8 +60,45 @@ const studentValidationSchema = z
     isActive: isActiveValidationSchema,
   })
   .strict();
-const updateStudentValidationSchema = studentValidationSchema
-  .partial()
+const updateStudentValidationSchema = z
+  .object({
+    name: updateStudentNameValidationSchema,
+    gender: z
+      .enum(['Male', 'Female'], {
+        required_error: 'Gender is required',
+        invalid_type_error: 'Gender must be Male or Female',
+      })
+      .optional(),
+    dateOfBirth: updateDateOfBirthValidationSchema,
+    email: z
+      .string({ required_error: 'Email is required' })
+      .email('Invalid email format')
+      .optional(),
+    contactNo: updateContactNoValidationSchema,
+    emergencyContactNo: updateEmergencyContactValidationSchema,
+    bloodGroup: updateBloodGroupValidationSchema,
+    presentAddress: addressValidationSchema('Present').optional(),
+    permanentAddress: addressValidationSchema('Permanent').optional(),
+    guardian: guardianValidationSchema.optional(),
+    localGuardian: localGuardianValidationSchema.optional(),
+    admissionSemester: z
+      .object({
+        name: z
+          .enum([...academicSemesterNames] as [string, ...string[]], {
+            required_error: 'Invalid Semester Name',
+          })
+          .optional(),
+        year: yearValidationSchema.optional(),
+      })
+      .optional(),
+    academicDepartment: z
+      .string({
+        required_error: 'Academic Department name is required',
+      })
+      .optional(),
+    profileImage: profileImageValidationSchema.optional(), // Could be optional if needed
+    isActive: isActiveValidationSchema.optional(),
+  })
   .strict();
 // Export the Zod schema for validation
 // Optional: Export inferred TypeScript type from Zod schema
